@@ -13,10 +13,15 @@ set autoindent
 set ignorecase smartcase
 set showmatch
 
+set wildignore+=*/target/*
+set wildignore+=*/node_modules/*
+
+set termguicolors
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
 highlight ColorColumn ctermbg=LightGrey ctermfg=Black
 syntax on
-
 
 let g:rustfmt_autosave = 1
 let g:go_fmt_command = "goimports"
@@ -29,18 +34,22 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'ctrlpvim/ctrlp.vim'
 
-Plug 'vim-airline/vim-airline'
+"Plug 'vim-airline/vim-airline'
+Plug 'itchyny/lightline.vim'
 Plug 'rust-lang/rust.vim',{ 'for': 'rust' }
+
+Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 
 Plug 'valloric/youcompleteme', { 'do': './install.py --rust-completer --go-completer', 'for': ['rust','go'] }
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries', 'for': 'go' }
-Plug 'https://github.com/joshdick/onedark.vim.git'
 
+Plug 'joshdick/onedark.vim'
 call plug#end()
 
 colorscheme onedark
 
-let g:ctrlp_use_caching = 0
+let g:ctrlp_use_caching = 1
+let g:ctrlp_root_markers = ['pom.xml', '.gitignore', 'Cargo.toml', 'go.mod']
 
 let mapleader = " "
 
@@ -51,6 +60,8 @@ nnoremap <leader>l :wincmd l<CR>
 
 nnoremap <silent> <Leader>= :vertical resize +5<CR>
 nnoremap <silent> <Leader>- :vertical resize -5<CR>
+
+nmap <leader>; :Buffers<CR>
 
 if executable('rg')
     let g:rg_derive_root='true'
