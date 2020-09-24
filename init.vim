@@ -21,7 +21,12 @@ let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
 highlight ColorColumn ctermbg=LightGrey ctermfg=Black
-syntax on
+syntax enable
+filetype plugin indent on
+
+" YAML spacing
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+autocmd FileType json setlocal ts=2 sts=2 sw=2 expandtab
 
 let g:rustfmt_autosave = 1
 let g:go_fmt_command = "goimports"
@@ -34,7 +39,8 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'ctrlpvim/ctrlp.vim'
 
-"Plug 'vim-airline/vim-airline'
+Plug 'scrooloose/nerdcommenter'
+
 Plug 'itchyny/lightline.vim'
 Plug 'rust-lang/rust.vim',{ 'for': 'rust' }
 
@@ -42,14 +48,31 @@ Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 
 Plug 'valloric/youcompleteme', { 'do': './install.py --rust-completer --go-completer', 'for': ['rust','go'] }
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries', 'for': 'go' }
+Plug 'vim-syntastic/syntastic'
 
 Plug 'joshdick/onedark.vim'
 call plug#end()
 
 colorscheme onedark
 
+let g:NERDSpaceDelims = 1
+let g:NERDCommentEmptyLines = 1
+let g:NERDTrimTrailingWhitespace = 1
+let g:NERDToggleCheckAllLines = 1
+
 let g:ctrlp_use_caching = 1
 let g:ctrlp_root_markers = ['pom.xml', '.gitignore', 'Cargo.toml', 'go.mod']
+
+" Syntastic config start
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+" Syntastic config end
 
 let mapleader = " "
 
