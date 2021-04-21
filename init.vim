@@ -161,6 +161,14 @@ nnoremap <Leader>pf :Rg<SPACE>
 
 nnoremap <leader>pg :GoDef<CR>
 nnoremap gb :GoDoc<CR>
+
+" https://pmihaylov.com/vim-for-go-development/
+autocmd BufEnter *.go nmap <leader>i <Plug>(go-info)
+autocmd BufEnter *.go nmap <leader>gi <Plug>(go-implements)
+autocmd BufEnter *.go nmap <leader>ge <Plug>(go-describe)
+autocmd BufEnter *.go nmap <leader>gc <Plug>(go-callers)
+
+nmap <leader>cr <Plug>(coc-references)
 " Ctrl-o or Ctrl-t to go back
 
 set tags=./tags;
@@ -168,4 +176,3 @@ let g:ctrlp_extensions = ['tag', 'quickfix']
 nnoremap <leader>t :CtrlPTag<cr>
 nnoremap <leader>m :CtrlPMRU<cr>
 nnoremap <leader>p :CtrlP<cr>
-
