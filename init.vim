@@ -13,6 +13,7 @@ set autoindent
 set ignorecase smartcase
 set showmatch
 set foldmethod=manual
+set mouse=a
 
 set wildignore+=*/target/*
 set wildignore+=*/node_modules/*
@@ -50,7 +51,6 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'ctrlpvim/ctrlp.vim'
 
 Plug 'scrooloose/nerdcommenter'
 Plug 'airblade/vim-gitgutter'
@@ -62,13 +62,14 @@ Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-" Plug 'Vimjas/vim-python-pep8-indent'
-Plug 'dense-analysis/ale', { 'for': 'markdown' }
-
 " Code formatting (for c++)
 Plug 'google/vim-maktaba'
 Plug 'google/vim-codefmt'
 Plug 'google/vim-glaive'
+
+Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
 
 call plug#end()
 
@@ -115,27 +116,11 @@ nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
-
-" ale config start
-let g:ale_echo_msg_error_str = 'E'
-let g:ale_echo_msg_warning_str = 'W'
-let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
-"let g:ale_fix_on_save = 1
-"let g:ale_lint_on_text_changed = 'never'
-"let g:ale_lint_on_enter = 0
-"let g:ale_fixers = {
-"\   '*': ['remove_trailing_lines', 'trim_whitespace'],
-"\   'javascript': ['eslint'],
-"\   'python': ['autopep8'],
-"\}
-
-"let g:ale_python_flake8_executable = 'python3'
-"let g:ale_python_flake8_options = '-m flake8'
-"let g:ale_python_autopep8_executable = 'python3 -m autopep8'
-"let g:ale_python_autopep8_options = '-m autopep8'
-" ale config end
+nmap <silent> gu <Plug>(coc-rename)
+nmap <silent> gt <Plug>(coc-type-definition)
 
 let g:rustfmt_autosave = 1
+let g:go_fmt_autosave = 1
 let g:go_fmt_command = "goimports"
 let g:go_info_mode = "gopls"
 
@@ -168,11 +153,8 @@ autocmd BufEnter *.go nmap <leader>gi <Plug>(go-implements)
 autocmd BufEnter *.go nmap <leader>ge <Plug>(go-describe)
 autocmd BufEnter *.go nmap <leader>gc <Plug>(go-callers)
 
-nmap <leader>cr <Plug>(coc-references)
-" Ctrl-o or Ctrl-t to go back
+" Using telescope for CtrlP file finder
+nnoremap <silent> <C-p> :Telescope find_files<CR>
 
-set tags=./tags;
-let g:ctrlp_extensions = ['tag', 'quickfix']
-nnoremap <leader>t :CtrlPTag<cr>
-nnoremap <leader>m :CtrlPMRU<cr>
-nnoremap <leader>p :CtrlP<cr>
+" To use ESC to get out of terminal mode in :terminal
+tnoremap <Esc> <C-\><C-n>
