@@ -7,6 +7,13 @@ vim.cmd('syntax enable')
 vim.cmd('filetype plugin indent on')
 vim.cmd('set background=dark')
 
+vim.api.nvim_command([[
+augroup TrimWhitespace
+autocmd BufWritePre * :%s/\s\+$//e
+augroup END
+]])
+
+
 set_options({
     -- buffer
     tabstop = 4,

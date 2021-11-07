@@ -92,7 +92,6 @@ local opts = {
     },
 
     server = {
-        cmd = { lsp_path .. '/rust/rust-analyzer' },
         settings = {
             ["rust-analyzer"] = {
                 -- enable clippy on save
