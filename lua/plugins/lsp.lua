@@ -92,6 +92,7 @@ local opts = {
     },
 
     server = {
+        --cmd = { lsp_path .. '/rust/rust-analyzer' },
         settings = {
             ["rust-analyzer"] = {
                 -- enable clippy on save
@@ -117,6 +118,14 @@ require('lspconfig').gopls.setup{
 
 require('lspconfig').clangd.setup{
     cmd = { lsp_path .. '/clangd/clangd' },
+    capabilities = capabilities,
+    on_attach = on_attach,
+}
+
+require('lspconfig').solargraph.setup{
+    flags = {
+        debounce_text_changes = 150,
+    },
     capabilities = capabilities,
     on_attach = on_attach,
 }

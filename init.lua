@@ -8,6 +8,7 @@ require('packer').startup(function()
     use 'scrooloose/nerdcommenter'
     use 'airblade/vim-gitgutter'
     use 'morhetz/gruvbox'
+    use 'tomasiser/vim-code-dark'
     use 'itchyny/lightline.vim'
     use 'nvim-treesitter/nvim-treesitter'
     use 'nvim-lua/plenary.nvim'
@@ -31,6 +32,7 @@ require('packer').startup(function()
     use { 'rust-lang/rust.vim' }
 end)
 
+require('colors')
 require('plugins.nerd')
 require('plugins.vim-go')
 require('plugins.coc-nvim')
