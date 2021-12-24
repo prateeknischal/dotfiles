@@ -19,8 +19,8 @@ window:
   # Specified in number of columns/lines, not pixels.
   # If both are `0`, this setting is ignored.
   #dimensions:
-  columns: 120
-  lines: 50
+  columns: 160
+  lines: 80
 
   # Window position (changes require restart)
   #
@@ -167,7 +167,7 @@ font:
     style: Bold Italic
 
   # Point size
-  size: 16.0
+  size: 14.0
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
@@ -201,8 +201,45 @@ font:
 # If `true`, bold text is drawn using the bright color variants.
 #draw_bold_text_with_bright_colors: true
 
-# Colors (Gruvbox dark)
+      # Base16 Atelier Dune - alacritty color config
+# Bram de Haan (http://atelierbramdehaan.nl)
 colors:
+  # Default colors
+  primary:
+    background: '0x20201d'
+    foreground: '0xa6a28c'
+
+  # Colors the cursor will use if `custom_cursor_colors` is true
+  cursor:
+    text: '0x20201d'
+    cursor: '0xa6a28c'
+
+  # Normal colors
+  normal:
+    black:   '0x20201d'
+    red:     '0xd73737'
+    green:   '0x60ac39'
+    yellow:  '0xae9513'
+    blue:    '0x6684e1'
+    magenta: '0xb854d4'
+    cyan:    '0x1fad83'
+    white:   '0xa6a28c'
+
+  # Bright colors
+  bright:
+    black:   '0x7d7a68'
+    red:     '0xb65611'
+    green:   '0x292824'
+    yellow:  '0x6e6b5e'
+    blue:    '0x999580'
+    magenta: '0xe8e4cf'
+    cyan:    '0xd43552'
+    white:   '0xfefbec'
+
+draw_bold_text_with_bright_colors: false
+
+# Colors (Gruvbox dark)
+xcolors:
   # Default colors
   primary:
     # hard contrast: background = '0x1d2021'
@@ -367,8 +404,7 @@ background_opacity: 1.0
     #
     # When set to `None`, URL launching will be disabled completely.
     #
-    # Default:
-    #   - (macOS) open
+    # Default:    #   - (macOS) open
     #   - (Linux/BSD) xdg-open
     #   - (Windows) explorer
     #launcher:
@@ -415,7 +451,7 @@ background_opacity: 1.0
 # - `key`: Identifier of the key pressed
 #
 #    - A-Z
-#    - F1-F24
+#   - F1-F24
 #    - Key0-Key9
 #
 #    A full list with available key codes can be found here:
@@ -504,21 +540,23 @@ background_opacity: 1.0
 # be mapped to the `ReceiveChar` action. Alternatively, you can use `None` for
 # a no-op if you do not wish to receive input characters for that binding.
 key_bindings:
+  - { key: F, mods: Command|Control, action: ToggleFullscreen }
     # (Windows, Linux, and BSD only)
-  - { key: V,        mods: Control|Shift, action: Paste            }
-  - { key: C,        mods: Control|Shift, action: Copy             }
-  - { key: Insert,   mods: Shift,         action: PasteSelection   }
-  - { key: Key0,     mods: Control,       action: ResetFontSize    }
-  - { key: Equals,   mods: Control,       action: IncreaseFontSize }
-  - { key: Add,      mods: Control,       action: IncreaseFontSize }
-  - { key: Subtract, mods: Control,       action: DecreaseFontSize }
-  - { key: Minus,    mods: Control,       action: DecreaseFontSize }
+    # - { key: V,        mods: Control|Shift, action: Paste            }
+    #  - { key: C,        mods: Control|Shift, action: Copy             }
+    #  - { key: Insert,   mods: Shift,         action: PasteSelection   }
+    #  - { key: Key0,     mods: Control,       action: ResetFontSize    }
+    #  - { key: Equals,   mods: Control,       action: IncreaseFontSize }
+    #  - { key: Add,      mods: Control,       action: IncreaseFontSize }
+    #  - { key: Subtract, mods: Control,       action: DecreaseFontSize }
+    #  - { key: Minus,    mods: Control,       action: DecreaseFontSize }
+    #
+    #  - { key: Paste,                    action: Paste                            }
+    #  - { key: Copy,                     action: Copy                             }
+    #  - { key: L,         mods: Control, action: ClearLogNotice                   }
+    #  - { key: L,         mods: Control, chars: "\x0c"                            }
+    #  - { key: PageUp,    mods: Shift,   action: ScrollPageUp,   mode: ~Alt       }
+    #  - { key: PageDown,  mods: Shift,   action: ScrollPageDown, mode: ~Alt       }
+    #  - { key: Home,      mods: Shift,   action: ScrollToTop,    mode: ~Alt       }
+    #  - { key: End,       mods: Shift,   action: ScrollToBottom, mode: ~Alt       }
 
-  - { key: Paste,                    action: Paste                            }
-  - { key: Copy,                     action: Copy                             }
-  - { key: L,         mods: Control, action: ClearLogNotice                   }
-  - { key: L,         mods: Control, chars: "\x0c"                            }
-  - { key: PageUp,    mods: Shift,   action: ScrollPageUp,   mode: ~Alt       }
-  - { key: PageDown,  mods: Shift,   action: ScrollPageDown, mode: ~Alt       }
-  - { key: Home,      mods: Shift,   action: ScrollToTop,    mode: ~Alt       }
-  - { key: End,       mods: Shift,   action: ScrollToBottom, mode: ~Alt       }

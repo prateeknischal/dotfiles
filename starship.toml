@@ -1,0 +1,35 @@
+add_newline = false
+format = "$time$status$character"
+right_format = '$directory $git_branch $cmd_duration'
+
+[line_break]
+disabled = true
+
+[status]
+symbol = ""
+
+map_symbol = false
+disabled = false
+
+[time]
+disabled = false
+format = '[\[$time\]]($style) '
+time_format = "%H:%M"
+
+[package]
+disabled = true
+
+[directory]
+format = "[$path]($style)"
+truncation_length = 2
+style = "blue"
+
+[git_branch]
+format = "(green)[$branch]($style)"
+
+[cmd_duration]
+format = "[$duration]($style)"
+show_milliseconds = true
+style = "blue"
+min_time = 1000
+
