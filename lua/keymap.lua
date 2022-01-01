@@ -4,11 +4,13 @@ local set_keymap = require('common').set_keymap
 local opt = {noremap = true}
 local sn = {silent = true, noremap = true}
 
--- splits 
+-- splits
 nvim_set_keymap('n', '<leader>h', ':wincmd h<CR>', opt)
 nvim_set_keymap('n', '<leader>j', ':wincmd j<CR>', opt)
 nvim_set_keymap('n', '<leader>k', ':wincmd k<CR>', opt)
 nvim_set_keymap('n', '<leader>l', ':wincmd l<CR>', opt)
+nvim_set_keymap('n', '<leader>H', ':wincmd H<CR>', opt)
+nvim_set_keymap('n', '<leader>K', ':wincmd K<CR>', opt)
 
 -- something
 nvim_set_keymap('n', ';w', ':w', opt)

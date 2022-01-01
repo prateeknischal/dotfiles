@@ -25,6 +25,10 @@ set_options({
     relativenumber = true,
     number = true,
 
+    -- splits
+    --splitbelow = true,
+    --splitright = true,
+
     -- editing
     swapfile = false,
     undofile = true,
