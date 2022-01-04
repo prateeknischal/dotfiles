@@ -134,7 +134,6 @@ require('lspconfig').clangd.setup{
 }
 
 require('lspconfig').solargraph.setup{
-    cmd = {"solargraph"},
     flags = {
         debounce_text_changes = 150,
     },
@@ -144,7 +143,7 @@ require('lspconfig').solargraph.setup{
         solargraph = {
             --diagnostic = true,
             --formatting = true,
-            logLevel = "info"
+            logLevel = "debug"
         }
     }
 }
@@ -160,3 +159,19 @@ require('lspconfig').sumneko_lua.setup {
     capabilities = capabilities,
     on_attach = on_attach
 }
+
+require('lspconfig').bashls.setup {
+    cmd = { 'node', lsp_path .. '/bash/node_modules/bash-language-server/bin/main.js', 'start' },
+    single_file_support = true,
+    capabilities = capabilities,
+    on_attach = on_attach
+}
+
+require('lint').linters_by_ft = {
+  markdown = {'vale'},
+  sh = {'shellcheck'},
+}
+
+vim.cmd[[
+au BufWritePost <buffer> lua require('lint').try_lint()
+]]

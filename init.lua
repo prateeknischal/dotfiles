@@ -25,6 +25,7 @@ require('packer').startup(function()
     use 'hrsh7th/nvim-cmp'
     use 'hrsh7th/vim-vsnip'
     use 'simrat39/rust-tools.nvim'
+    use 'mfussenegger/nvim-lint'
 
     use 'cespare/vim-toml'
     use 'vmchale/ion-vim'
