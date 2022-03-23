@@ -64,3 +64,4 @@ vim.g.go_highlight_extra_types = 1
 vim.g.go_highlight_build_constraints = 1
 vim.g.go_highlight_generate_tags = 1
 vim.g.go_doc_popup_window = 1
+

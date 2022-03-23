@@ -114,6 +114,9 @@ local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protoco
 
 require('lspconfig').gopls.setup{
     cmd = { 'gopls', "serve" },
+    flags = {
+        debounce_text_changes = 150,
+    },
     settings = {
         gopls = {
             analyses = {
@@ -152,10 +155,30 @@ require('lspconfig').solargraph.setup{
     }
 }
 
-require('lspconfig').jedi_language_server.setup{
-    cmd = { lsp_path .. '/jedi_language_server/venv/bin/jedi-language-server' },
-    capabilities = capabilities,
+require('lspconfig').pylsp.setup {
+    cmd = { lsp_path .. 'pylsp/venv/bin/pylsp' },
     on_attach = on_attach,
+    flags = {
+    debounce_text_changes = 150,
+    },
+    capabilities = capabilities,
+
+    -- For further configuration: https://github.com/python-lsp/python-lsp-server/blob/develop/CONFIGURATION.md
+    settings = {
+    pylsp = {
+        configurationSources = "flake8",
+        plugins = {
+            flake8 = { enabled = true, indentSize = 4 },
+            pylsp_black = { enabled = true },
+            pyls_isort = { enabled = true },
+            pycodestyle = { enabled = false },
+            mccabe = { enabled = false },
+            pyflakes = { enabled = false },
+            yapf = { enabled = false },
+            autopep8 = { enabled = false },
+        },
+    },
+    },
 }
 
 require('lspconfig').sumneko_lua.setup {

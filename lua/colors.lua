@@ -10,5 +10,12 @@ end
 vim.g.gruvbox_contrast_dark = 'hard'
 vim.g.background = 'dark'
 
-vim.cmd('colorscheme gruvbox')
--- vim.cmd('colorscheme codedark')
+--vim.cmd('colorscheme gruvbox')
+vim.cmd('colorscheme gruvbox-material')
+vim.g.gruvbox_material_palette = 'original'
+vim.g.gruvbox_material_enable_bold = 1
+vim.g.gruvbox_material_enable_italic = 1
+vim.g.gruvbox_material_visual = 'blue background'
+vim.g.gruvbox_material_diagnostic_virtual_text = 'colored'
+vim.g.gruvbox_material_statusline_style = 'original'
+vim.g.gruvbox_material_better_performance = 1
