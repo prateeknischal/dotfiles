@@ -12,6 +12,10 @@ nvim_set_keymap('n', '<leader>l', ':wincmd l<CR>', opt)
 nvim_set_keymap('n', '<leader>H', ':wincmd H<CR>', opt)
 nvim_set_keymap('n', '<leader>K', ':wincmd K<CR>', opt)
 
+-- tabs
+nvim_set_keymap('n', '<leader>a', 'gt', opt)
+nvim_set_keymap('n', '<leader>f', 'gT', opt)
+
 -- something
 nvim_set_keymap('n', ';w', ':w', opt)
 nvim_set_keymap('n', ';q', ':q', opt)
@@ -41,3 +45,9 @@ set_keymap('n', '<leader>7', '7gt')
 set_keymap('n', '<leader>8', '8gt')
 set_keymap('n', '<leader>9', '9gt')
 set_keymap('n', '<leader>0', ':tablast<CR>')
+
+-- telescope key bindings
+nvim_set_keymap('n', '<C-p>', ':Telescope find_files<CR>', opt)
+nvim_set_keymap('n', '<leader>ff', ':Telescope live_grep<CR>', opt)
+nvim_set_keymap('n', '<leader>fb', ':Telescope buffers<CR>', opt)
+nvim_set_keymap('n', '<leader>fh', ':Telescope help_tags<CR>', opt)

@@ -1,8 +1,6 @@
-local config = require('lspconfig/configs')
 local vim = vim
-local lsp_path = vim.fn.expand('$HOME/.local/share/nvim/lsp_servers')
-local go_bin = vim.fn.expand('$HOME/go/bin')
 local nvim_lsp = require('lspconfig')
+local lsp_path = vim.fn.expand('$HOME/.local/share/nvim/lsp_servers')
 
 -- Setup nvim-cmp.
 local cmp = require('cmp')
@@ -31,9 +29,9 @@ local on_attach = function(client, bufnr)
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
     buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-    buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+    buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
     buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-    buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+    buf_set_keymap('n', '<leader>,', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
     buf_set_keymap('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
     buf_set_keymap('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
     buf_set_keymap('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
@@ -62,12 +60,12 @@ cmp.setup({
     ['<C-n>'] = cmp.mapping.select_next_item(),
     -- Add tab support
     ['<S-Tab>'] = cmp.mapping.select_prev_item(),
-    ['<Tab>'] = cmp.mapping.select_next_item(),
+    ['<CR>'] = cmp.mapping.select_next_item(),
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<C-e>'] = cmp.mapping.close(),
-    ['<CR>'] = cmp.mapping.confirm({
+    ['<Tab>'] = cmp.mapping.confirm({
       behavior = cmp.ConfirmBehavior.Insert,
       select = true,
     })
@@ -77,9 +75,9 @@ cmp.setup({
   sources = {
     { name = 'nvim_lsp' },
     { name = 'nvim_lua' },
-    { name = 'vsnip' },
     { name = 'path' },
     { name = 'buffer', keyword_length = 4 },
+    { name = 'vsnip' },
   },
 })
 
@@ -96,6 +94,7 @@ local opts = {
 
     server = {
         --cmd = { lsp_path .. '/rust/rust-analyzer' },
+        on_attach = on_attach,
         settings = {
             ["rust-analyzer"] = {
                 -- enable clippy on save
@@ -118,13 +117,18 @@ require('lspconfig').gopls.setup{
     settings = {
         gopls = {
             analyses = {
-                unusedparams = true
+                unusedparams = true,
+                shadow = true,
             },
             staticcheck = true,
         },
     },
     capabilities = capabilities,
     on_attach = on_attach,
+    init_options = {
+        usePlaceholders = true,
+        completeUnimported = true,
+    }
 }
 
 require('lspconfig').clangd.setup{
@@ -167,6 +171,11 @@ require('lspconfig').bashls.setup {
     on_attach = on_attach
 }
 
+require('lspconfig').eslint.setup {
+    capabilities = capabilities,
+    on_attach = on_attach
+}
+
 require('lint').linters_by_ft = {
   markdown = {'vale'},
   sh = {'shellcheck'},
@@ -175,3 +184,4 @@ require('lint').linters_by_ft = {
 vim.cmd[[
 au BufWritePost <buffer> lua require('lint').try_lint()
 ]]
+-- au filetype go inoremap <buffer> . .<C-x><C-o>

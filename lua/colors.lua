@@ -10,5 +10,5 @@ end
 vim.g.gruvbox_contrast_dark = 'hard'
 vim.g.background = 'dark'
 
--- vim.cmd('colorscheme gruvbox')
-vim.cmd('colorscheme codedark')
+vim.cmd('colorscheme gruvbox')
+-- vim.cmd('colorscheme codedark')

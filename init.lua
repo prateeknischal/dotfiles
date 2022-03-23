@@ -32,13 +32,12 @@ require('packer').startup(function()
     use 'google/vim-maktaba'
     use 'google/vim-codefmt'
     use 'google/vim-glaive'
-    --use { 'fatih/vim-go', run = ':GoUpdateBinaries' }
+    use { 'fatih/vim-go', run = ':GoUpdateBinaries' }
     use { 'rust-lang/rust.vim' }
 end)
 
 require('colors')
 require('plugins.nerd')
-require('plugins.vim-go')
+--require('plugins.vim-go')
 --require('plugins.coc-nvim')
 require('plugins.lsp')
-
