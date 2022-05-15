@@ -135,7 +135,6 @@ require('lspconfig').gopls.setup{
 }
 
 require('lspconfig').clangd.setup{
-    cmd = { lsp_path .. '/clangd/clangd' },
     capabilities = capabilities,
     on_attach = on_attach,
 }
@@ -156,7 +155,6 @@ require('lspconfig').solargraph.setup{
 }
 
 require('lspconfig').pylsp.setup {
-    cmd = { lsp_path .. 'pylsp/venv/bin/pylsp' },
     on_attach = on_attach,
     flags = {
     debounce_text_changes = 150,
@@ -165,30 +163,30 @@ require('lspconfig').pylsp.setup {
 
     -- For further configuration: https://github.com/python-lsp/python-lsp-server/blob/develop/CONFIGURATION.md
     settings = {
-    pylsp = {
-        configurationSources = "flake8",
-        plugins = {
-            flake8 = { enabled = true, indentSize = 4 },
-            pylsp_black = { enabled = true },
-            pyls_isort = { enabled = true },
-            pycodestyle = { enabled = false },
-            mccabe = { enabled = false },
-            pyflakes = { enabled = false },
-            yapf = { enabled = false },
-            autopep8 = { enabled = false },
+        pylsp = {
+            configurationSources = "flake8",
+            plugins = {
+                flake8 = { enabled = true, indentSize = 4 },
+                pylsp_black = { enabled = true },
+                pyls_isort = { enabled = true },
+                pycodestyle = { enabled = true },
+                mccabe = { enabled = true },
+                pyflakes = { enabled = true },
+                yapf = { enabled = true },
+                autopep8 = { enabled = true },
+            },
         },
-    },
     },
 }
 
 require('lspconfig').sumneko_lua.setup {
-    cmd = { lsp_path .. '/sumneko_lua/extension/server/bin/lua-language-server' },
+    cmd = { 'lua-language-server' },
     capabilities = capabilities,
     on_attach = on_attach
 }
 
 require('lspconfig').bashls.setup {
-    cmd = { 'node', lsp_path .. '/bash/node_modules/bash-language-server/bin/main.js', 'start' },
+    cmd = { 'bash-language-server', 'start' },
     single_file_support = true,
     capabilities = capabilities,
     on_attach = on_attach
