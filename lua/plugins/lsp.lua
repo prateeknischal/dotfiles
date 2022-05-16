@@ -171,10 +171,23 @@ require('lspconfig').pylsp.setup {
                 pylsp_isort = { enabled = true },
                 pylint = { enabled = true },
                 yapf = { enabled = true },
-                pylsp_mypy = { enabled = true },
             },
         },
     },
+}
+
+require('lspconfig').pyright.setup{
+    cmd = { 'pyright-langserver', '--stdio' },
+    capabilities = capabilities,
+    on_attach = on_attach,
+    flags = { debounce_text_changes = 150 },
+    settings = {
+        pyright = {
+            autoImportCompletions = true,
+            typeCheckingMode = 'basic',
+            useLibraryCodeForTypes = true,
+        }
+    }
 }
 
 require('lspconfig').sumneko_lua.setup {
