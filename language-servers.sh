@@ -16,4 +16,5 @@ wget https://github.com/sumneko/lua-language-server/releases/download/3.2.2/lua-
 mkdir -p ~/.local/bin/sumneko_lua
 tar -C ~/.local/bin/sumneko_lua -xf lua-language-server-3.2.2-linux-x64.tar.gz
 
-sudo node install -g eslint bash-language-server
+sudo npm install -g eslint bash-language-server
+sudo npm install -g vscode-langservers-extracted
