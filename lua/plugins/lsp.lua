@@ -157,23 +157,21 @@ require('lspconfig').solargraph.setup{
 require('lspconfig').pylsp.setup {
     on_attach = on_attach,
     flags = {
-    debounce_text_changes = 150,
+        debounce_text_changes = 150,
     },
     capabilities = capabilities,
 
     -- For further configuration: https://github.com/python-lsp/python-lsp-server/blob/develop/CONFIGURATION.md
     settings = {
         pylsp = {
-            configurationSources = "flake8",
+            configurationSources = {"flake8"},
             plugins = {
                 flake8 = { enabled = true, indentSize = 4 },
                 pylsp_black = { enabled = true },
-                pyls_isort = { enabled = true },
-                pycodestyle = { enabled = true },
-                mccabe = { enabled = true },
-                pyflakes = { enabled = true },
+                pylsp_isort = { enabled = true },
+                pylint = { enabled = true },
                 yapf = { enabled = true },
-                autopep8 = { enabled = true },
+                pylsp_mypy = { enabled = true },
             },
         },
     },
