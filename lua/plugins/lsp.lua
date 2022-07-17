@@ -24,7 +24,7 @@ local on_attach = function(client, bufnr)
     buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
     -- Mappings.
-    local opts = { noremap=true, silent=true }
+    local opts = { noremap = true, silent = true }
 
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
@@ -49,36 +49,36 @@ end
 -- Setup Completion
 -- See https://github.com/hrsh7th/nvim-cmp#basic-configuration
 cmp.setup({
-  -- Enable LSP snippets
-  snippet = {
-    expand = function(args)
-        vim.fn["vsnip#anonymous"](args.body)
-    end,
-  },
-  mapping = {
-    ['<C-p>'] = cmp.mapping.select_prev_item(),
-    ['<C-n>'] = cmp.mapping.select_next_item(),
-    -- Add tab support
-    ['<S-Tab>'] = cmp.mapping.select_prev_item(),
-    ['<CR>'] = cmp.mapping.select_next_item(),
-    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete(),
-    ['<C-e>'] = cmp.mapping.close(),
-    ['<Tab>'] = cmp.mapping.confirm({
-      behavior = cmp.ConfirmBehavior.Insert,
-      select = true,
-    })
-  },
+    -- Enable LSP snippets
+    snippet = {
+        expand = function(args)
+            vim.fn["vsnip#anonymous"](args.body)
+        end,
+    },
+    mapping = {
+        ['<C-p>'] = cmp.mapping.select_prev_item(),
+        ['<C-n>'] = cmp.mapping.select_next_item(),
+        -- Add tab support
+        ['<S-Tab>'] = cmp.mapping.select_prev_item(),
+        ['<CR>'] = cmp.mapping.select_next_item(),
+        ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+        ['<C-f>'] = cmp.mapping.scroll_docs(4),
+        ['<C-Space>'] = cmp.mapping.complete(),
+        ['<C-e>'] = cmp.mapping.close(),
+        ['<Tab>'] = cmp.mapping.confirm({
+            behavior = cmp.ConfirmBehavior.Insert,
+            select = true,
+        })
+    },
 
-  -- Installed sources
-  sources = {
-    { name = 'nvim_lsp' },
-    { name = 'nvim_lua' },
-    { name = 'path' },
-    { name = 'buffer', keyword_length = 4 },
-    { name = 'vsnip' },
-  },
+    -- Installed sources
+    sources = {
+        { name = 'nvim_lsp' },
+        { name = 'nvim_lua' },
+        { name = 'path' },
+        { name = 'buffer', keyword_length = 4 },
+        { name = 'vsnip' },
+    },
 })
 
 local opts = {
@@ -112,7 +112,7 @@ require('rust-tools').setup(opts)
 -- Setup lspconfig.
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
-require('lspconfig').gopls.setup{
+require('lspconfig').gopls.setup {
     cmd = { 'gopls', "serve" },
     flags = {
         debounce_text_changes = 150,
@@ -134,12 +134,12 @@ require('lspconfig').gopls.setup{
     }
 }
 
-require('lspconfig').clangd.setup{
+require('lspconfig').clangd.setup {
     capabilities = capabilities,
     on_attach = on_attach,
 }
 
-require('lspconfig').solargraph.setup{
+require('lspconfig').solargraph.setup {
     flags = {
         debounce_text_changes = 150,
     },
@@ -164,7 +164,7 @@ require('lspconfig').pylsp.setup {
     -- For further configuration: https://github.com/python-lsp/python-lsp-server/blob/develop/CONFIGURATION.md
     settings = {
         pylsp = {
-            configurationSources = {"flake8"},
+            configurationSources = { "flake8" },
             plugins = {
                 flake8 = { enabled = true, indentSize = 4 },
                 pylsp_black = { enabled = true },
@@ -176,7 +176,7 @@ require('lspconfig').pylsp.setup {
     },
 }
 
-require('lspconfig').pyright.setup{
+require('lspconfig').pyright.setup {
     cmd = { 'pyright-langserver', '--stdio' },
     capabilities = capabilities,
     on_attach = on_attach,
@@ -208,12 +208,25 @@ require('lspconfig').eslint.setup {
     on_attach = on_attach
 }
 
-require('lint').linters_by_ft = {
-  markdown = {'vale'},
-  sh = {'shellcheck'},
+require 'lspconfig'.tsserver.setup {
+    capabilities = capabilities,
+    on_attach = on_attach,
 }
 
-vim.cmd[[
+require 'lspconfig'.zls.setup {
+    capabilities = capabilities,
+    on_attach = on_attach,
+}
+
+require('lspconfig').yamlls.setup {}
+
+require('lint').linters_by_ft = {
+    --markdown = {'vale'},
+    sh = { 'shellcheck' },
+}
+
+vim.cmd [[
+autocmd BufWritePre * lua vim.lsp.buf.formatting_sync()
 au BufWritePost <buffer> lua require('lint').try_lint()
 ]]
 -- au filetype go inoremap <buffer> . .<C-x><C-o>

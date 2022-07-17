@@ -21,6 +21,7 @@ window:
   #dimensions:
   columns: 160
   lines: 80
+  opacity: 1.00
 
   # Window position (changes require restart)
   #
@@ -167,15 +168,7 @@ font:
     style: Bold Italic
 
   # Point size
-  size: 14.0
-
-  # Offset is the extra space around each character. `offset.y` can be thought of
-  # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
-  offset:
-    x: 1
-    y: 1
-
-  # Glyph offset determines the locations of the glyphs within their cells with
+  size: 12.0
   # the default being at the bottom. Increasing `x` moves the glyph to the right,
   # increasing `y` moves the glyph upwards.
   #glyph_offset:
@@ -203,7 +196,7 @@ font:
 
       # Base16 Atelier Dune - alacritty color config
 # Bram de Haan (http://atelierbramdehaan.nl)
-colors:
+ycolors:
   # Default colors
   primary:
     background: '0x20201d'
@@ -238,6 +231,38 @@ colors:
 
 draw_bold_text_with_bright_colors: false
 
+# https://github.com/projekt0n/github-nvim-theme/blob/main/terminal/alacritty/github_dark.yml
+colors:
+  # Default colors
+  primary:
+    background: '0x24292e'
+    foreground: '0xd1d5da'
+
+  # Normal colors
+  normal:
+    black:   '0x586069'
+    red:     '0xea4a5a'
+    green:   '0x34d058'
+    yellow:  '0xffea7f'
+    blue:    '0x2188ff'
+    magenta: '0xb392f0'
+    cyan:    '0x39c5cf'
+    white:   '0xd1d5da'
+
+  # Bright colors
+  bright:
+    black:   '0x959da5'
+    red:     '0xf97583'
+    green:   '0x85e89d'
+    yellow:  '0xffea7f'
+    blue:    '0x79b8ff'
+    magenta: '0xb392f0'
+    cyan:    '0x56d4dd'
+    white:   '0xfafbfc'
+
+  indexed_colors:
+    - { index: 16, color: '0xd18616' }
+    - { index: 17, color: '0xf97583' }
 # Colors (Gruvbox dark)
 xcolors:
   # Default colors
@@ -294,13 +319,6 @@ xcolors:
 #  animation: EaseOutExpo
 #  duration: 0
 #  color: '0xffffff'
-
-# Background opacity
-#
-# Window opacity as a floating point number from `0.0` to `1.0`.
-# The value `0.0` is completely transparent and `1.0` is opaque.
-background_opacity: 1.0
-# background_opacity: 0.95
 
 #selection:
   #semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"
