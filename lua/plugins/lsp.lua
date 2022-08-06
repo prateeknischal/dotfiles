@@ -163,14 +163,15 @@ require('lspconfig').pylsp.setup {
 
     -- For further configuration: https://github.com/python-lsp/python-lsp-server/blob/develop/CONFIGURATION.md
     settings = {
+        formatCommand = {"black"},
         pylsp = {
-            configurationSources = { "flake8" },
             plugins = {
+                black = { enabled = true, line_length = 80 },
                 flake8 = { enabled = true, indentSize = 4 },
-                pylsp_black = { enabled = true },
-                pylsp_isort = { enabled = true },
-                pylint = { enabled = true },
-                yapf = { enabled = true },
+                pyls_isort = { enabled = true },
+                pyflakes = { enabled = true },
+                pycodestyle = { enabled = false },
+                pylint = { enabled = true, executable = "pylint" },
             },
         },
     },
@@ -225,8 +226,7 @@ require('lint').linters_by_ft = {
     sh = { 'shellcheck' },
 }
 
-vim.cmd [[
-autocmd BufWritePre * lua vim.lsp.buf.formatting_sync()
-au BufWritePost <buffer> lua require('lint').try_lint()
-]]
--- au filetype go inoremap <buffer> . .<C-x><C-o>
+vim.api.nvim_create_autocmd({'BufWritePre'}, {
+    pattern = {"*.py"},
+    callback = vim.lsp.buf.formatting,
+})
