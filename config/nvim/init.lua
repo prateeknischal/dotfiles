@@ -8,9 +8,6 @@ require('packer').startup(function()
     use 'scrooloose/nerdcommenter'
     use 'airblade/vim-gitgutter'
     use 'morhetz/gruvbox'
-    use 'sainnhe/gruvbox-material'
-    use 'projekt0n/github-nvim-theme'
-    use 'tomasiser/vim-code-dark'
     use 'itchyny/lightline.vim'
     use 'nvim-treesitter/nvim-treesitter'
     use 'nvim-lua/plenary.nvim'
@@ -37,13 +34,8 @@ require('packer').startup(function()
     use 'google/vim-glaive'
     use { 'fatih/vim-go', run = ':GoUpdateBinaries' }
     use { 'rust-lang/rust.vim' }
-
-    -- zig tools
-    use 'ziglang/zig.vim'
 end)
 
 require('colors')
 require('plugins.nerd')
---require('plugins.vim-go')
---require('plugins.coc-nvim')
 require('plugins.lsp')

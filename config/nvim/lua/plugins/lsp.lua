@@ -1,6 +1,6 @@
 local vim = vim
 local nvim_lsp = require('lspconfig')
-local lsp_path = vim.fn.expand('$HOME/.local/share/nvim/lsp_servers')
+require('nvim-lsp-installer').setup({})
 
 -- Setup nvim-cmp.
 local cmp = require('cmp')
@@ -84,7 +84,6 @@ cmp.setup({
 local opts = {
     tools = { -- rust-tools options
         autoSetHints = true,
-        hover_with_actions = true,
         inlay_hints = {
             show_parameter_hints = false,
             parameter_hints_prefix = "",
