@@ -1,5 +1,5 @@
 add_newline = false
-format = "$time$status$character"
+format = "$python$status$character"
 right_format = '$directory $git_branch $cmd_duration'
 
 [line_break]
@@ -33,3 +33,6 @@ show_milliseconds = true
 style = "blue"
 min_time = 1000
 
+[python]
+format = '[${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
+python_binary = ["./venv/bin/python", "python3"]
