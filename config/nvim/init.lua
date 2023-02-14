@@ -14,7 +14,8 @@ require('packer').startup(function()
     use 'nvim-telescope/telescope.nvim'
 
     use 'neovim/nvim-lspconfig'
-    use 'williamboman/nvim-lsp-installer'
+    use 'williamboman/mason.nvim'
+    use 'williamboman/mason-lspconfig.nvim'
     use 'ray-x/lsp_signature.nvim'
 
     use 'hrsh7th/cmp-nvim-lsp'
@@ -29,9 +30,7 @@ require('packer').startup(function()
 
     use 'cespare/vim-toml'
     use 'vmchale/ion-vim'
-    use 'google/vim-maktaba'
-    use 'google/vim-codefmt'
-    use 'google/vim-glaive'
+    use 'jose-elias-alvarez/null-ls.nvim'
     use { 'fatih/vim-go', run = ':GoUpdateBinaries' }
     use { 'rust-lang/rust.vim' }
 end)
@@ -39,3 +38,4 @@ end)
 require('colors')
 require('plugins.nerd')
 require('plugins.lsp')
+require('plugins.null-ls')

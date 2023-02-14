@@ -1,6 +1,8 @@
 local vim = vim
 local nvim_lsp = require('lspconfig')
-require('nvim-lsp-installer').setup({})
+
+require("mason").setup()
+require("mason-lspconfig").setup()
 
 -- Setup nvim-cmp.
 local cmp = require('cmp')
