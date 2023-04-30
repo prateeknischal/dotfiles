@@ -25,5 +25,5 @@ augroup filetype_options
   autocmd FileType rust     setlocal colorcolumn=100 textwidth=100
 
   " CPP setup done using this tutorial https://xuechendi.github.io/2019/11/11/VIM-CPP-IDE-2019-111-11-VIM_CPP_IDE
-  autocmd FileType c,cpp,proto AutoFormatBuffer clang-format
+  "autocmd FileType c,cpp,proto AutoFormatBuffer clang-format
 augroup END

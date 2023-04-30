@@ -26,7 +26,10 @@ require('packer').startup(function()
     use 'hrsh7th/nvim-cmp'
     use 'hrsh7th/vim-vsnip'
     use 'simrat39/rust-tools.nvim'
+
     use 'mfussenegger/nvim-lint'
+    use 'mfussenegger/nvim-jdtls'
+    use 'mfussenegger/nvim-dap'
 
     use 'cespare/vim-toml'
     use 'vmchale/ion-vim'
@@ -39,3 +42,4 @@ require('colors')
 require('plugins.nerd')
 require('plugins.lsp')
 require('plugins.null-ls')
+require('plugins.mason')
