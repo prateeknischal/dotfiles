@@ -191,5 +191,7 @@ require('lint').linters_by_ft = {
 
 vim.api.nvim_create_autocmd({'BufWritePre'}, {
     pattern = {"*.py", ".cc", ".cpp", ".java", ".sh"},
-    callback = vim.lsp.buf.formatting,
+    callback = function()
+        vim.lsp.buf.format({async = true})
+    end
 })
