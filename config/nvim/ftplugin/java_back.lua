@@ -1,6 +1,9 @@
--- https://github.com/crisidev/dotfiles/blob/main/home/.config/lvim/lua/user/lsp/java.lua
 local vim = vim
-local capabilities = require('common').capabilities
+local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
+
+-- define text options
+vim.api.nvim_command("set colorcolumn=120")
+vim.api.nvim_command("set textwidth=120")
 
 -- Lsp config
 local status_ok, jdtls = pcall(require, "jdtls")
@@ -18,18 +21,29 @@ if vim.loop.os_uname().sysname == "Darwin" then
     config_dir = jdtls_dir .. '/config_darwin'
 end
 
-local root_markers = { '.git', 'Config', 'pom.xml', 'build.xml', 'build.gradle' }
-local root_dir = require('jdtls.setup').find_root(root_markers)
+local root_dir = require('jdtls.setup').find_root({'packageInfo'}, 'Config')
 
 if root_dir == '' then
     return
 end
 
 local home = vim.env.HOME
-local WORKSPACE_PATH = home .. "/.cache/jdtls/workspace"
+local WORKSPACE_PATH = home .. "/.cache/jdtls/workspace/"
 
 local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
 local workspace_dir = WORKSPACE_PATH .. project_name
+
+local ws_folders_jdtls = {}
+if root_dir then
+    local file = io.open(root_dir .. '/.bemol/ws_root_folders')
+    if file then
+        for line in file:lines() do
+            table.insert(ws_folders_jdtls, "file://" .. line)
+        end
+
+        file:close()
+    end
+end
 
 local extendedClientCapabilities = jdtls.extendedClientCapabilities
 extendedClientCapabilities.resolveAdditionalTextEditsSupport = true
@@ -72,21 +86,38 @@ local config = {
         "-configuration", config_dir,
         "-data", workspace_dir,
     },
+
     on_attach = function(client, bufnr)
         local _, _ = pcall(vim.lsp.codelens.refresh)
-        require("jdtls.dap").setup_dap_main_class_configs()
         require("jdtls").setup_dap { hotcodereplace = "auto" }
+        --require("jdtls.dap").setup_dap_main_class_configs()
 
         local opts = { noremap = true, silent = true }
         vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>i', '<cmd>lua require("jdtls").organize_imports()<CR>', opts)
         vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>s', '<cmd>lua require("jdtls").super_implementation()<CR>', opts)
         vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>m', '<cmd>lua require("jdtls").extract_method()<CR>', opts)
-
-        -- call the base on_attach handler
-        require('common').on_attach(client, bufnr)
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-k>', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>,', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>f', '<cmd>lua vim.lsp.buf.format({async = true})<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>gc', '<cmd>lua vim.lsp.buf.incoming_calls()<CR>', opts)
     end,
+
     capabilities = capabilities,
-    root_dir = root_dir,
+
     settings = {
         java = {
             -- jdt = {
@@ -119,10 +150,10 @@ local config = {
             },
             format = {
                 enabled = true,
-                --settings = {
-                    --profile = "GoogleStyle",
-                    --url = home .. "/.config/lvim/.java-google-formatter.xml",
-                --},
+                settings = {
+                    profile = "GoogleStyle",
+                    url = home .. "/.config/lvim/.java-google-formatter.xml",
+                },
             },
         },
         signatureHelp = { enabled = true },
@@ -148,6 +179,7 @@ local config = {
     },
     init_options = {
         bundles = bundles,
+        workspaceFolders = ws_folders_jdtls,
     },
 }
 
