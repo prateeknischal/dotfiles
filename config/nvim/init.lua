@@ -95,9 +95,15 @@ require('lazy').setup({
 
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
+
+      {
+        'ray-x/lsp_signature.nvim',
+        event = "VeryLazy",
+        opts = {},
+        config = function(_, opts) require('lsp_signature').setup(opts) end
+      }
     },
   },
-
   {
     -- Autocompletion
     'hrsh7th/nvim-cmp',
@@ -156,6 +162,7 @@ require('lazy').setup({
   },
 
   {
+    -- Theme inspired by Atom
     'morhetz/gruvbox',
     priority = 1000,
     config = function()
@@ -204,6 +211,9 @@ require('lazy').setup({
     main = 'ibl',
     opts = {},
   },
+
+  -- "gc" to comment visual regions/lines
+  { 'numToStr/Comment.nvim', opts = {} },
 
   -- Fuzzy Finder (files, lsp, etc)
   {
@@ -308,6 +318,10 @@ vim.o.cmdheight = 2
 vim.o.swapfile = false
 vim.o.hidden = true
 vim.o.incsearch = true
+vim.o.tabstop = 4
+vim.o.softtabstop = 0
+vim.o.expandtab = false
+vim.o.shiftwidth = 4
 
 
 -- [[ Basic Keymaps ]]
@@ -430,6 +444,7 @@ vim.api.nvim_create_user_command('LiveGrepGitRoot', live_grep_git_root, {})
 -- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
 vim.keymap.set('n', '<C-l>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
+vim.keymap.set('n', '<C-p>', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<leader>/', function()
   -- You can pass additional configuration to telescope to change theme, layout, etc.
   require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
@@ -440,14 +455,12 @@ end, { desc = '[/] Fuzzily search in current buffer' })
 
 vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
 vim.keymap.set('n', '<leader>p', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
-vim.keymap.set('n', '<C-p>', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>ff', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sG', ':LiveGrepGitRoot<cr>', { desc = '[S]earch by [G]rep on Git Root' })
 vim.keymap.set('n', '<leader>e', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })
-vim.keymap.set('n', '<C-l>', require('telescope.builtin').buffers, { desc = '[L]ist [B]uffers' })
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
@@ -560,6 +573,13 @@ local on_attach = function(client, bufnr)
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, '[W]orkspace [L]ist Folders')
 
+  -- Create a command `:Format` local to the LSP buffer
+  vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
+    vim.lsp.buf.format()
+  end, { desc = 'Format current buffer with LSP' })
+
+  nmap('<leader>f', vim.lsp.buf.format, '[F]ormat [B]uffer')
+
   if client.name == 'barium' then
     client.server_capabilities.semanticTokensProvider = nil
   end
@@ -591,11 +611,14 @@ require('mason-lspconfig').setup()
 --  If you want to override the default filetypes that your language server will attach to you can
 --  define the property 'filetypes' to the map in question.
 local servers = {
-  -- clangd = {},
+  clangd = {},
+  ansiblels = {},
+  bashls = {},
   -- gopls = {},
-  -- pyright = {},
-  -- rust_analyzer = {},
-  -- tsserver = {},
+  pyright = {},
+  pylsp = {},
+  rust_analyzer = {},
+  tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
 
   lua_ls = {
@@ -647,10 +670,10 @@ cmp.setup {
     end,
   },
   completion = {
-    completeopt = 'menu,menuone,noinsert'
+    completeopt = 'menuone,noinsert',
   },
   mapping = cmp.mapping.preset.insert {
-    ['<C-n>'] = cmp.mapping.select_next_item(),
+    ['<CR>'] = cmp.mapping.select_next_item(),
     ['<C-p>'] = cmp.mapping.select_prev_item(),
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
@@ -681,6 +704,11 @@ cmp.setup {
   sources = {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
+    {
+      name = 'buffer',
+      keyword_length = 4,
+    },
+    { name = 'path' },
   },
 }
 
@@ -697,8 +725,8 @@ vim.cmd([[
 -- barium config
 
 -- Set Config file syntax to ion
-vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
-  pattern = {"Config", "*.ion"},
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+  pattern = { "Config", "*.ion" },
   callback = function(_)
     vim.cmd([[ set syntax=ion ]])
   end
@@ -710,27 +738,27 @@ local lspconfig = require('lspconfig')
 local configs = require('lspconfig.configs')
 
 vim.filetype.add({
-    filename = {
-        Config = "brazil-config"
-    }
+  filename = {
+    Config = "brazil-config"
+  }
 })
 
 -- Check if the config is already defined (useful when reloading this file)
 if not configs.barium then
-    configs.barium = {
-        default_config = {
-            cmd = {'barium'};
-            filetypes = {"brazil-config"};
-            root_dir = function(fname)
-                return lspconfig.util.find_git_ancestor(fname)
-            end;
-            settings = {};
-        };
-    }
+  configs.barium = {
+    default_config = {
+      cmd = { 'barium' },
+      filetypes = { "brazil-config" },
+      root_dir = function(fname)
+        return lspconfig.util.find_git_ancestor(fname)
+      end,
+      settings = {},
+    },
+  }
 end
 
 lspconfig.barium.setup({
-    on_attach = on_attach,
-    capabilities = capabilities,
-    flags = { debounce_text_changes = 150 },
+  on_attach = on_attach,
+  capabilities = capabilities,
+  flags = { debounce_text_changes = 150 },
 })
