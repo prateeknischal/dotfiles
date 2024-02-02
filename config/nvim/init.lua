@@ -105,6 +105,12 @@ require('lazy').setup({
     },
   },
   {
+    'ldelossa/litee.nvim',
+    dependencies = {
+      'ldelossa/litee-calltree.nvim',
+    }
+  },
+  {
     -- Autocompletion
     'hrsh7th/nvim-cmp',
     dependencies = {
@@ -214,6 +220,8 @@ require('lazy').setup({
 
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} },
+  { 'nvim-tree/nvim-web-devicons', opts = {} },
+  { 'kevinhwang91/nvim-bqf', opts = {} },
 
   -- Fuzzy Finder (files, lsp, etc)
   {
@@ -435,6 +443,7 @@ local function live_grep_git_root()
   if git_root then
     require('telescope.builtin').live_grep({
       search_dirs = { git_root },
+      additional_args = { "--ignore-case" },
     })
   end
 end
@@ -474,7 +483,9 @@ vim.defer_fn(function()
     -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
     auto_install = false,
 
-    highlight = { enable = true },
+    highlight = {
+      enable = false ,
+    },
     indent = { enable = true },
     incremental_selection = {
       enable = true,
@@ -580,9 +591,7 @@ local on_attach = function(client, bufnr)
 
   nmap('<leader>f', vim.lsp.buf.format, '[F]ormat [B]uffer')
 
-  if client.name == 'barium' then
-    client.server_capabilities.semanticTokensProvider = nil
-  end
+  client.server_capabilities.semanticTokensProvider = nil
 end
 
 
@@ -647,14 +656,28 @@ mason_lspconfig.setup {
 
 mason_lspconfig.setup_handlers {
   function(server_name)
-    require('lspconfig')[server_name].setup {
-      capabilities = capabilities,
-      on_attach = on_attach,
-      settings = servers[server_name],
-      filetypes = (servers[server_name] or {}).filetypes,
-    }
+    if server_name ~= 'jdtls' then
+      -- tell mason to not handle jdtls init for me
+      -- since I have a custom config for it in ftplugin
+      require('lspconfig')[server_name].setup {
+        capabilities = capabilities,
+        on_attach = on_attach,
+        settings = servers[server_name],
+        filetypes = (servers[server_name] or {}).filetypes,
+      }
+    end
   end,
 }
+
+-- [[ Configure litee.calltree ]]
+
+require('litee.lib').setup({
+  panel = {
+    orientation = "right",
+    panel_size = 30
+  },
+})
+require('litee.calltree').setup({})
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
@@ -676,11 +699,11 @@ cmp.setup {
     documentation = cmp.config.window.bordered()
   },
   formatting = {
+    expandable_indicator = false,
     fields = {'menu', 'abbr', 'kind'},
     format = function(entry, item)
       local menu_icon = {
         nvim_lsp = 'λ',
-        luasnip = '⋗',
         buffer = 'Ω',
         path = '🖫',
       }
@@ -695,11 +718,11 @@ cmp.setup {
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete {},
-    ['<Tab>'] = cmp.mapping.confirm {
+    ['<CR>'] = cmp.mapping.confirm {
       --behavior = cmp.ConfirmBehavior.Replace,
       select = true,
     },
-    ['<CR>'] = cmp.mapping(function(fallback)
+    ['<Tab>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
       else
