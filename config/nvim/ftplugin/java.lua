@@ -125,9 +125,6 @@ local config = {
             --     vmargs = "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx1G -Xms100m"
             --   }
             -- },
-            saveActions = {
-                organizeImports = true,
-            },
             eclipse = {
                 downloadSources = true,
             },
