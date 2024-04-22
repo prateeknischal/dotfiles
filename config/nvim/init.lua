@@ -221,6 +221,9 @@ require('lazy').setup({
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} },
   { 'nvim-tree/nvim-web-devicons', opts = {} },
+  {
+    'onsails/lspkind.nvim'
+  },
   { 'kevinhwang91/nvim-bqf', opts = {} },
 
   -- Fuzzy Finder (files, lsp, etc)
@@ -262,6 +265,14 @@ require('lazy').setup({
     url = 'prateekx@git.amazon.com:pkg/NinjaHooks',
     branch = 'mainline',
     rtp = 'configuration/vim/amazon/brazil-config'
+  },
+
+  {
+    'glacambre/firenvim',
+    lazy = not vim.g.started_by_firenvim,
+    build = function()
+      vim.fn["firenvim#install"](0)
+    end
   },
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
@@ -686,6 +697,7 @@ local luasnip = require 'luasnip'
 require('luasnip.loaders.from_vscode').lazy_load()
 luasnip.config.setup {}
 
+local lspkind = require('lspkind')
 cmp.setup {
   snippet = {
     expand = function(args)
@@ -701,15 +713,21 @@ cmp.setup {
   formatting = {
     expandable_indicator = false,
     fields = {'menu', 'abbr', 'kind'},
-    format = function(entry, item)
-      local menu_icon = {
-        nvim_lsp = 'λ',
-        buffer = 'Ω',
-        path = '🖫',
-      }
+    format = function(entry, vim_item)
+      vim_item.kind = string.format("%s %s", lspkind.presets.default[vim_item.kind], vim_item.kind)
+      -- See where 'Text' is coming from in you completion menu
+      vim_item.menu = ({
+        nvim_lsp = "ﲳ",
+        nvim_lua = "",
+        treesitter = "",
+        path = "ﱮ",
+        buffer = "﬘",
+        zsh = "",
+        vsnip = "",
+        spell = "暈",
+      })[entry.source.name]
 
-      item.menu = menu_icon[entry.source.name]
-      return item
+      return vim_item
     end,
   },
   mapping = cmp.mapping.preset.insert {
@@ -798,3 +816,10 @@ lspconfig.barium.setup({
   capabilities = capabilities,
   flags = { debounce_text_changes = 150 },
 })
+
+vim.g.firenvim_config = {
+  localSettings = {
+    [".*"] = { takeover = "never" },
+  }
+}
+
