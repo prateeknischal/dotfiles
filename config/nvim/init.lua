@@ -127,7 +127,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim',  opts = {} },
+  { 'folke/which-key.nvim',        opts = {} },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -166,7 +166,6 @@ require('lazy').setup({
       end,
     },
   },
-
   {
     -- Theme inspired by Atom
     'morhetz/gruvbox',
@@ -219,12 +218,11 @@ require('lazy').setup({
   },
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
+  { 'numToStr/Comment.nvim',       opts = {} },
   { 'nvim-tree/nvim-web-devicons', opts = {} },
   {
     'onsails/lspkind.nvim'
   },
-  { 'kevinhwang91/nvim-bqf', opts = {} },
 
   -- Fuzzy Finder (files, lsp, etc)
   {
@@ -267,14 +265,6 @@ require('lazy').setup({
     rtp = 'configuration/vim/amazon/brazil-config'
   },
 
-  {
-    'glacambre/firenvim',
-    lazy = not vim.g.started_by_firenvim,
-    build = function()
-      vim.fn["firenvim#install"](0)
-    end
-  },
-
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
@@ -289,6 +279,7 @@ require('lazy').setup({
   --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
   -- { import = 'custom.plugins' },
 }, {})
+
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -331,7 +322,7 @@ vim.o.completeopt = 'menuone,noselect'
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
-vim.o.colorcolumn = 80
+vim.o.colorcolumn = "80"
 vim.o.foldmethod = "manual"
 vim.o.cmdheight = 2
 vim.o.swapfile = false
@@ -495,7 +486,7 @@ vim.defer_fn(function()
     auto_install = false,
 
     highlight = {
-      enable = false ,
+      enable = false,
     },
     indent = { enable = true },
     incremental_selection = {
@@ -712,21 +703,9 @@ cmp.setup {
   },
   formatting = {
     expandable_indicator = false,
-    fields = {'menu', 'abbr', 'kind'},
+    fields = { 'menu', 'abbr', 'kind' },
     format = function(entry, vim_item)
       vim_item.kind = string.format("%s %s", lspkind.presets.default[vim_item.kind], vim_item.kind)
-      -- See where 'Text' is coming from in you completion menu
-      vim_item.menu = ({
-        nvim_lsp = "ﲳ",
-        nvim_lua = "",
-        treesitter = "",
-        path = "ﱮ",
-        buffer = "﬘",
-        zsh = "",
-        vsnip = "",
-        spell = "暈",
-      })[entry.source.name]
-
       return vim_item
     end,
   },
@@ -817,9 +796,8 @@ lspconfig.barium.setup({
   flags = { debounce_text_changes = 150 },
 })
 
-vim.g.firenvim_config = {
-  localSettings = {
-    [".*"] = { takeover = "never" },
-  }
-}
-
+--vim.g.firenvim_config = {
+--localSettings = {
+--[".*"] = { takeover = "never" },
+--}
+--}
