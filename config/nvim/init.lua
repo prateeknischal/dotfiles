@@ -168,10 +168,10 @@ require('lazy').setup({
   },
   {
     -- Theme inspired by Atom
-    'morhetz/gruvbox',
+    'sainnhe/gruvbox-material',
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme 'gruvbox'
+      vim.cmd.colorscheme 'gruvbox-material'
       vim.g.gruvbox_contrast_dark = 'hard'
       vim.g.background = 'dark'
     end,
@@ -184,7 +184,7 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = false,
-        theme = 'gruvbox',
+        theme = 'gruvbox-material',
         component_separators = '|',
         section_separators = '',
       },
