@@ -259,6 +259,8 @@ require('lazy').setup({
   'vmchale/ion-vim',
   'cespare/vim-toml',
 
+  { 'microsoft/python-type-stubs' },
+
   {
     url = 'prateekx@git.amazon.com:pkg/NinjaHooks',
     branch = 'mainline',
@@ -624,8 +626,6 @@ local servers = {
   clangd = {},
   ansiblels = {},
   bashls = {},
-  pyright = {},
-  pylsp = {},
   rust_analyzer = {},
   tsserver = {},
   jsonls = {},
@@ -836,3 +836,29 @@ lspconfig.gopls.setup({
     },
   },
 })
+
+lspconfig.pyright.setup({
+  on_attach = on_attach,
+  capabilities = capabilities,
+  flags = { debounce_text_changes = 150 },
+  before_init = function(_, config)
+    config.settings.python.analysis.stubPath = vim.fs.joinpath(vim.fn.stdpath "data", "lazy", "python-type-stubs")
+  end,
+  settings = {
+    pyright = {
+      autoImportCompletion = true,
+      disableLanguageServices = false,
+      disableOrganizeImports = false,
+      useLibraryCodeForTypes = true,
+    },
+    python = {
+      analysis = {
+        autoSearchPaths = true,
+        diagnosticMode = 'openFilesOnly',
+        useLibraryCodeForTypes = true,
+        typeCheckingMode = 'on',
+      },
+    },
+  },
+})
+
