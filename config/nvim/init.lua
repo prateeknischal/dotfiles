@@ -71,6 +71,7 @@ require('lazy').setup({
 
   -- Git related plugins
   'tpope/vim-fugitive',
+  { 'akinsho/git-conflict.nvim', config = true },
   'tpope/vim-rhubarb',
 
   -- Detect tabstop and shiftwidth automatically
@@ -78,6 +79,14 @@ require('lazy').setup({
 
   -- Comment like a pro
   'scrooloose/nerdcommenter',
+  {
+    'mason-org/mason-lspconfig.nvim',
+    opts = {},
+    dependencies = {
+      { 'mason-org/mason.nvim', opts = {} },
+      'neovim/nvim-lspconfig'
+    }
+  },
 
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
@@ -85,10 +94,6 @@ require('lazy').setup({
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {
-      -- Automatically install LSPs to stdpath for neovim
-      'williamboman/mason.nvim',
-      'williamboman/mason-lspconfig.nvim',
-
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
       { 'j-hui/fidget.nvim', opts = {} },
@@ -125,15 +130,14 @@ require('lazy').setup({
       'rafamadriz/friendly-snippets',
     },
   },
-
   -- Useful plugin to show you pending keybinds.
   {
     'folke/which-key.nvim',
+    opts = {},
     dependencies = {
       'echasnovski/mini.icons'
     }
   },
-
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -262,8 +266,14 @@ require('lazy').setup({
 
   'mfussenegger/nvim-jdtls',
   'mfussenegger/nvim-dap',
+  'mfussenegger/nvim-dap-python',
   'vmchale/ion-vim',
   'cespare/vim-toml',
+  {
+    'MeanderingProgrammer/render-markdown.nvim',
+    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
+    opts = {},
+  },
 
   { 'microsoft/python-type-stubs' },
 
@@ -271,6 +281,11 @@ require('lazy').setup({
     url = 'prateekx@git.amazon.com:pkg/NinjaHooks',
     branch = 'mainline',
     rtp = 'configuration/vim/amazon/brazil-config'
+  },
+
+  {
+    url = 'prateekx@git.amazon.com:pkg/AmazonQNVim',
+    branch = 'mainline',
   },
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
@@ -331,7 +346,6 @@ vim.o.completeopt = 'menuone,noselect'
 vim.o.termguicolors = true
 
 vim.o.colorcolumn = "80"
-vim.o.foldmethod = "manual"
 vim.o.cmdheight = 2
 vim.o.swapfile = false
 vim.o.hidden = true
@@ -340,7 +354,9 @@ vim.o.tabstop = 4
 vim.o.softtabstop = 0
 vim.o.expandtab = false
 vim.o.shiftwidth = 4
-
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.foldlevel = 99
 
 -- [[ Basic Keymaps ]]
 
@@ -639,7 +655,6 @@ local servers = {
   ansiblels = {},
   bashls = {},
   rust_analyzer = {},
-  tsserver = {},
   jsonls = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
 
@@ -660,15 +675,10 @@ require('neodev').setup()
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
--- Ensure the servers above are installed
-local mason_lspconfig = require 'mason-lspconfig'
-
-mason_lspconfig.setup {
+require('mason-lspconfig').setup {
+  automatic_enable = false,
   ensure_installed = vim.tbl_keys(servers),
-}
-
-mason_lspconfig.setup_handlers {
-  function(server_name)
+  setup_handlers = function(server_name)
     if server_name ~= 'jdtls' then
       -- tell mason to not handle jdtls init for me
       -- since I have a custom config for it in ftplugin
@@ -699,24 +709,70 @@ local luasnip = require 'luasnip'
 require('luasnip.loaders.from_vscode').lazy_load()
 luasnip.config.setup {}
 
+local lsp_kinds = {
+  Class = ' ',
+  Color = ' ',
+  Constant = ' ',
+  Constructor = ' ',
+  Enum = ' ',
+  EnumMember = ' ',
+  Event = ' ',
+  Field = ' ',
+  File = ' ',
+  Folder = ' ',
+  Function = ' ',
+  Interface = ' ',
+  Keyword = ' ',
+  Method = ' ',
+  Module = ' ',
+  Operator = ' ',
+  Property = ' ',
+  Reference = ' ',
+  Snippet = ' ',
+  Struct = ' ',
+  Text = ' ',
+  TypeParameter = ' ',
+  Unit = ' ',
+  Value = ' ',
+  Variable = ' ',
+}
+
 local lspkind = require('lspkind')
 cmp.setup {
+  experimental = {
+    ghost_text = true,
+  },
   snippet = {
     expand = function(args)
       luasnip.lsp_expand(args.body)
     end,
   },
   completion = {
-    completeopt = 'menuone,noinsert',
+    completeopt = 'menu,menuone,noinsert',
   },
   window = {
-    documentation = cmp.config.window.bordered()
+    completion = cmp.config.window.bordered({
+      border = 'single',
+      col_offset = -1,
+      winhighlight = 'Normal:Pmenu,FloatBorder:Pmenu,CursorLine:PmenuSel,Search:None',
+    }),
+    documentation = cmp.config.window.bordered({
+      border = 'solid',
+      winhighlight = 'CursorLine:Visual,Search:None',
+    })
   },
   formatting = {
     expandable_indicator = false,
     fields = { 'menu', 'abbr', 'kind' },
     format = function(entry, vim_item)
-      vim_item.kind = string.format("%s %s", lspkind.presets.default[vim_item.kind], vim_item.kind)
+      vim_item.kind = string.format("%s %s", lsp_kinds[vim_item.kind], vim_item.kind)
+      vim_item.menu = ({
+        buffer = '[Buffer]',
+        nvim_lsp = '[LSP]',
+        luasnip = '[LuaSnip]',
+        amazonq = '[AmazonQ]',
+        path = '[Path]',
+      })[entry.source.name]
       return vim_item
     end,
   },
@@ -747,6 +803,7 @@ cmp.setup {
   },
   sources = {
     { name = 'nvim_lsp' },
+    { name = 'amazonq' },
     { name = 'luasnip' },
     {
       name = 'buffer',

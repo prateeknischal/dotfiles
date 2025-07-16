@@ -89,7 +89,7 @@ local config = {
 
     on_attach = function(client, bufnr)
         local _, _ = pcall(vim.lsp.codelens.refresh)
-        require("jdtls").setup_dap { hotcodereplace = "auto" }
+        --require("jdtls").setup_dap { hotcodereplace = "auto" }
         --require("jdtls.dap").setup_dap_main_class_configs()
 
         local opts = { noremap = true, silent = true }
